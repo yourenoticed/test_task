@@ -15,20 +15,18 @@ async def get_admins():
 
 
 async def is_admin(tg_id: int) -> bool:
-    admins = await get_admins()
-    for admin in admins:
-        if admin.tg_id == tg_id:
+    async with session() as s:
+        result = await s.scalar(select(Admin).where(Admin.tg_id == tg_id))
+        if result:
             return True
-    return False
+        return False
 
 
-async def add_user(user):
+async def add_user(user: list) -> None:
     async with engine.begin() as conn:
-        await conn.execute(insert(User).values(
-            [user[0], user[1], user[2]]
-        ))
+        await conn.execute(insert(User).values(user))
 
 
-async def make_admin():
+async def make_admin(tg_id: int) -> None:
     async with engine.begin() as conn:
-        await conn.execute(insert(Admin).values([460761422]))
+        await conn.execute(insert(Admin).values([tg_id]))
