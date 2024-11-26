@@ -1,21 +1,25 @@
-from aiogram import Router
+from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.filters import CommandStart, Command
-from database.requests import get_admins, add_user, is_admin
+
+from database.requests import add_user
 from service import get_user_info
+from handlers.keyboards import main_kbr
 
-customers_router = Router()
+clients_router = Router()
 
 
-@customers_router.message(CommandStart())
+@clients_router.message(CommandStart())
 async def start(message: Message):
+    await message.answer(text="Здравствуй, клиентик", reply_markup=main_kbr)
     await add_user(get_user_info(message))
-    await message.answer("fuck you")
 
 
-@customers_router.message(Command("admin"))
-async def admin(message: Message):
-    if await is_admin(message.chat.id):
-        await message.answer("da, ty admin")
-    else:
-        await message.answer("snachala dorosti")
+@clients_router.message(F.text == "Меню")
+async def menu(message: Message):
+    await message.reply("Это меню")
+
+
+@clients_router.message(F.text == "Мои заказы")
+async def menu(message: Message):
+    await message.reply("Это твои заказы")

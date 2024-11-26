@@ -1,7 +1,7 @@
 from os import environ
 from asyncio import run
 from aiogram import Bot, Dispatcher
-from handlers.customers import customers_router
+from handlers.customers import clients_router
 from handlers.admin import admin_router
 from database.requests import create_model, make_admin
 
@@ -9,7 +9,7 @@ from database.requests import create_model, make_admin
 async def main():
     bot = Bot(environ.get("TOKEN"))
     dp = Dispatcher()
-    dp.include_routers(customers_router, admin_router)
+    dp.include_routers(clients_router, admin_router)
     await dp.start_polling(bot)
 
 
